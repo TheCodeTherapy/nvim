@@ -29,4 +29,7 @@ return {
       require("neo-tree").setup(opts)
     end,
   },
+  {
+    "mg979/vim-visual-multi",
+  },
 }
