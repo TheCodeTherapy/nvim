@@ -98,6 +98,8 @@ keymap.set("n", "<leader><Left>", "<C-w>h")
 keymap.set("n", "<leader><Right>", "<C-w>l")
 keymap.set("n", "<leader><Up>", "<C-w>k")
 keymap.set("n", "<leader><Down>", "<C-w>j")
+keymap.set("n", "<A-Right>", ":BufferLineCycleNext<CR>", opts)
+keymap.set("n", "<A-Left>", ":BufferLineCyclePrev<CR>", opts)
 
 -- Disable default macro record
 keymap.set("n", "q", "<Nop>", opts)
