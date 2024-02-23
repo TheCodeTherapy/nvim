@@ -101,6 +101,10 @@ keymap.set("n", "<leader><Down>", "<C-w>j")
 keymap.set("n", "<A-Right>", ":BufferLineCycleNext<CR>", opts)
 keymap.set("n", "<A-Left>", ":BufferLineCyclePrev<CR>", opts)
 
+-- Resize
+keymap.set("n", "<C-w><Left>", "<C-w><")
+keymap.set("n", "<C-w><Right>", "<C-w>>")
+
 -- Disable default macro record
 keymap.set("n", "q", "<Nop>", opts)
 
