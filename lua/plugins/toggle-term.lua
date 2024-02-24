@@ -90,7 +90,7 @@ return {
     -- This field is only relevant if direction is set to 'float'
     float_opts = {
       border = "curved", -- "single" or "double" or "shadow" or "curved",
-      winblend = 3,
+      -- winblend = 5,
       highlights = {
         border = "Normal",
         background = "Normal",
