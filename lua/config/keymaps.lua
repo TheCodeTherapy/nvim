@@ -108,4 +108,11 @@ keymap.set("n", "<C-w><Right>", "<C-w>>")
 -- Disable default macro record
 keymap.set("n", "q", "<Nop>", opts)
 
+-- Normie emulation
+keymap.set("n", "<S-End>", "v$")
+keymap.set("v", "<S-End>", "g_", opts)
+keymap.set("v", "<C-c>", '"+y', opts)
+keymap.set("n", "<C-v>", '"+p', opts)
+keymap.set("i", "<C-v>", "<C-r>+", { noremap = true })
+
 vim.api.nvim_set_keymap("n", "gg", "<cmd>lua require('thecodetherapy.goto').go_to_implementation()<CR>", opts)
