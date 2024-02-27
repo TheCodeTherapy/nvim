@@ -81,30 +81,43 @@ end
 local function copy_file_and_diagnostics_to_clipboard()
   local file_path = vim.fn.expand("%")
   local relative_file_path = vim.fn.fnamemodify(file_path, ":~:.")
+  local file_extension = vim.fn.fnamemodify(file_path, ":e")
+  local markdown_code_block_identifier = file_extension
+  local extension_to_markdown = {
+    ts = "typescript",
+    js = "javascript",
+    py = "python",
+  }
+  if extension_to_markdown[file_extension] then
+    markdown_code_block_identifier = extension_to_markdown[file_extension]
+  end
   local file_content = table.concat(vim.fn.readfile(file_path), "\n")
-
   local diagnostics = vim.diagnostic.get(0)
   local diagnostic_lines = {}
   for _, diag in ipairs(diagnostics) do
     local line_content = vim.fn.getline(diag.lnum + 1)
     table.insert(
       diagnostic_lines,
-      string.format("Line %d: %s\nDiagnostic: %s", diag.lnum + 1, line_content, diag.message)
+      string.format("\n\n>- Line %d: `%s`\n>- Diagnostic: %s\n", diag.lnum + 1, line_content, diag.message)
     )
   end
   local diagnostics_text = table.concat(diagnostic_lines, "\n\n")
-
-  local clipboard_text =
-    string.format("File: %s\n\n```\n%s\n```\n\nDiagnostics:\n%s", relative_file_path, file_content, diagnostics_text)
-  vim.fn.setreg("+", clipboard_text) -- Copies text to the system clipboard
+  local clipboard_text = string.format(
+    "File: %s\n\n```%s\n%s\n```\n\nDiagnostics:\n%s",
+    relative_file_path,
+    markdown_code_block_identifier,
+    file_content,
+    diagnostics_text
+  )
+  vim.fn.setreg("+", clipboard_text)
   print("File and diagnostics copied to clipboard!")
 end
 
 local function create_and_preview_diagnostics()
   copy_file_and_diagnostics_to_clipboard()
-  vim.cmd("tabnew " .. vim.fn.getcwd() .. "/diagnostics.md")
-  local bufnr = vim.api.nvim_get_current_buf()
-  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+  local diagnostics_file_path = vim.fn.getcwd() .. "/diagnostics.md"
+  vim.cmd("e " .. diagnostics_file_path)
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, {})
   vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
   vim.cmd("write")
   vim.cmd("MarkdownPreview")
