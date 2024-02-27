@@ -6,3 +6,11 @@ vim.opt.winbar = "%=%m %f"
 
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
+
+vim.diagnostic.config({
+  float = {
+    border = "rounded",
+    source = "always",
+    update_in_insert = "true",
+  },
+})
