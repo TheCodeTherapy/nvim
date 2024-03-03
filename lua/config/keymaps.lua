@@ -175,4 +175,36 @@ keymap.set("v", "<C-c>", '"+y', opts)
 keymap.set("n", "<C-v>", '"+p', opts)
 keymap.set("i", "<C-v>", "<C-r>+", { noremap = true })
 
+local signature_help_window_opened = false
+local signature_help_forced = false
+
+local function my_signature_help_handler(handler)
+  return function(...)
+    if signature_help_forced and signature_help_window_opened then
+      signature_help_forced = false
+      return handler(...)
+    end
+    if signature_help_window_opened then
+      return
+    end
+    local fbuf, fwin = handler(...)
+    signature_help_window_opened = true
+    vim.api.nvim_exec("autocmd WinClosed " .. fwin .. " lua signature_help_window_opened=false", false)
+    return fbuf, fwin
+  end
+end
+
+---@diagnostic disable-next-line: unused-local, unused-function
+local function force_signature_help()
+  signature_help_forced = true
+  vim.lsp.buf.signature_help()
+end
+
+-- These mappings allow to focus on the floating window when opened.
+keymap.set("n", "<C-k>", force_signature_help, opts)
+keymap.set("i", "<C-k>", force_signature_help, opts)
+
+vim.lsp.handlers["textDocument/signatureHelp"] =
+  vim.lsp.with(my_signature_help_handler(vim.lsp.handlers.signature_help), {})
+
 vim.api.nvim_set_keymap("n", "gg", "<cmd>lua require('thecodetherapy.goto').go_to_implementation()<CR>", opts)
