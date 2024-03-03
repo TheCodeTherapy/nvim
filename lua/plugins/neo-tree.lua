@@ -7,6 +7,7 @@ return {
         hide_gitignored = false,
       },
       window = {
+        width = 35,
         mappings = {
           ["L"] = "open_nofocus",
         },
